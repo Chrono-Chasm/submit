@@ -1,0 +1,8 @@
+redis:
+  host: localhost
+  port: 9876
+  tasks_db: 0
+  lock_db: 1
+
+cuda_visible_devices: null # e.g. "0,1,2,3"
+WAIT_TIME: 3

@@ -1,0 +1,32 @@
+- cmd:
+  - source activate submit
+  - whereis python
+  - echo $CUDA_VISIBLE_DEVICES
+  - sleep 10
+  - echo 1
+  min_gpus: 1
+  min_gpu_memory: 1000
+  priority: 0
+  available_gpu_ids: [2]
+  stderr_log_path: stderr.log
+  stdout_log_path: stdout.log
+
+- cmd:
+  - source activate submit
+  - whereis python
+  - echo $CUDA_VISIBLE_DEVICES
+  - sleep 10
+  - echo 2
+  min_gpus: 3
+  min_gpu_memory: 1000
+  priority: 0
+
+- cmd:
+  - source activate submit
+  - whereis python
+  - echo $CUDA_VISIBLE_DEVICES
+  - sleep 10
+  - echo 3
+  min_gpus: 3
+  min_gpu_memory: 1000
+  priority: 2
