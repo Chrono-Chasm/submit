@@ -85,7 +85,7 @@ WAIT_TIME: 3               # 等待时间（秒）
 
 ```bash
 # 可以使用CONFIG_PATH环境变量指定配置文件路径，也可使用默认配置文件
-CONFIG_PATH=<your_yaml_config_path> python auto_submit.shell
+CONFIG_PATH=<your_yaml_config_path> python -m auto_submit.shell
 # 按提示操作即可。
 ```
 
