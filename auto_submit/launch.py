@@ -12,16 +12,18 @@ WAIT_TIME = config["WAIT_TIME"]
 
 def try_submit(task: Task, cuda_visible_devices):
 
-    task.submitting(
-        os.path.join(os.pardir, os.pardir, SCRIPT_DIR, "log", f"{task.task_id}.stdout"),
-        os.path.join(os.pardir, os.pardir, SCRIPT_DIR, "log", f"{task.task_id}.stderr"),
-    )
+    task.submitting()
     redis_db.set_task(task)
     gpus = get_available_gpus(task, cuda_visible_devices)
     while gpus is None:
         time.sleep(WAIT_TIME)
         gpus = get_available_gpus(task, cuda_visible_devices)
-    task.running(gpus)
+    datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
+    task.running(
+        gpus,
+        os.path.join(SCRIPT_DIR, os.pardir, "log", f"{datetime} {task.task_id}.stdout"),
+        os.path.join(SCRIPT_DIR, os.pardir, "log", f"{datetime} {task.task_id}.stderr"),
+    )
     redis_db.set_task(task)
 
 

@@ -44,6 +44,7 @@ class RedisDB:
                 task.priority += max_priority
         task_list += tasks
         self.set_task_list(task_list)
+        tqdm.write(f"add {len(tasks)} tasks to redisdb.")
 
     def get_task_list(self) -> List[Task]:
         assert self.r is not None, "redis is not connected."

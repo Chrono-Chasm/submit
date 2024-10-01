@@ -29,8 +29,11 @@ class Lock:
         self.redis.set(self.name, self.pid)
         return False
 
+    @property
+    def lock_pid(self):
+        return self.redis.get(self.name)
+
     # 判断目标进程是否存在
     @property
     def exist(self):
-        pid = self.redis.get(self.name)
-        return pid is not None and psutil.pid_exists(int(pid))
+        return self.lock_pid is not None and psutil.pid_exists(int(self.lock_pid))

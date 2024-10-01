@@ -17,7 +17,7 @@ class Task:
     cmd: List[str]
     min_gpus: int = 0
     min_gpu_memory: Optional[int] = None
-    priority: Optional[int] = None
+    priority: int = 0
     available_gpu_ids: Optional[List[int]] = None
     stderr_log_path: Optional[str] = None
     stdout_log_path: Optional[str] = None
@@ -28,11 +28,14 @@ class Task:
     pid: Optional[int] = None
     occupied_gpu_ids: List[int] = field(default_factory=list)
 
-    def submitting(self, stdout_log_path, stderr_log_path):
+    def submitting(self):
         assert self.state == NOT_SUBMITTED
+        self.state = SUBMITTING
+
+    def running(self, gpus, stdout_log_path, stderr_log_path):
+        assert self.state == SUBMITTING
         _ = self
         try:
-            self.state = SUBMITTING
             if self.stdout_log_path is None:
                 self.stdout_log_path = stdout_log_path
             if self.stderr_log_path is None:
@@ -46,15 +49,12 @@ class Task:
         except Exception as e:
             self = _
             raise e
-
-    def running(self, gpus):
-        assert self.state == SUBMITTING
         self.state = RUNNING
         if self.min_gpus != 0:
             CUDA_DEVICES = f"export CUDA_VISIBLE_DEVICES={','.join(map(str, gpus))}"
             cmd = [CUDA_DEVICES] + self.cmd
         cmd = " && ".join(cmd)
-        full_cmd = f"nohup bash -c '{cmd}' 1>{self.stdout_log_path} 2>{self.stderr_log_path} &  echo $!"
+        full_cmd = f"nohup bash -c '{cmd}' 1>\"{self.stdout_log_path}\" 2>\"{self.stderr_log_path}\" &  echo $!"
         self.pid = int(subprocess.getoutput(full_cmd))
         self.occupied_gpu_ids = gpus
         self.full_cmd = full_cmd
