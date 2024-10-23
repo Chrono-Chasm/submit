@@ -6,21 +6,25 @@ build-backend = "hatchling.build"
 source = "vcs"
 
 [project]
-version="0.0.1"
 name = "auto_submit"
-authors = [
-  { name="?" },
-]
+version = "0.0.1"
 description = "自动提交任务"
+authors = [
+    { name = "yym", email = "yaoyiming@stu.xmu.edu.cn" },
+]
 classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: Unix",
 ]
 requires-python = ">=3.8"
-dynamic = ["dependencies"]
+
+# 直接添加依赖项
+dependencies = [
+    "tqdm",
+    "redis",
+    "psutil",
+    "pyyaml",
+]
 
 [tool.hatch.build.targets.wheel]
 packages = ["auto_submit"]
-
-[tool.setuptools.dynamic]
-dependencies = {file = ["requirements.txt"]}

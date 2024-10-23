@@ -1,6 +1,6 @@
 redis:
   host: localhost
-  port: 9876
+  port: 10086
   tasks_db: 0
   lock_db: 1
 

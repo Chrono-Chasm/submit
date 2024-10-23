@@ -42,3 +42,11 @@
   priority: 2
   stderr_log_path: ./log/main stderr.log
   stdout_log_path: ./log/main stdout.log
+
+- cmd:
+    - export PATH=/PATH/TO/anaconda3/bin:$PATH
+    - whereis activate
+  min_gpus: 0
+  stdout_log_path: ./log/stdout.log
+  stderr_log_path: ./log/stderr.log
+    

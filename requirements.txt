@@ -1,2 +1,4 @@
 tqdm
 redis
+psutil
+pyyaml

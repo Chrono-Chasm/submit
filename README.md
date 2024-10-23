@@ -65,6 +65,7 @@ WAIT_TIME: 3               # 等待时间（秒）
 ```yaml
 # 可以配置多个任务，每个任务是一个字典
 - cmd:
+  - export PATH=/PATH/TO/anaconda3/bin:$PATH # 没这句可能会导致找不到activate
   - source activate submit   # 激活conda环境"submit"
   - whereis python
   - echo $CUDA_VISIBLE_DEVICES
@@ -72,7 +73,7 @@ WAIT_TIME: 3               # 等待时间（秒）
   - echo 1
   # 最好不要用引号，可能有转义问题。如需引号，可将命令写入bash脚本并调用。
   min_gpus: 1                # 任务所需GPU数量，可选，默认为0
-  min_gpu_memory: 1000       # 任务所需GPU内存（MB），可选
+  min_gpu_memory: 1000       # 任务所需GPU内存（MB），可选，默认为0
   priority: 0                # 任务优先级，越小越优先，默认为0
   # 新任务必须比正在被提交和运行的任务优先级低。可强制提交以提高优先级。
   available_gpu_ids: [2]     # 任务可使用的GPU ID列表，可选

@@ -16,7 +16,7 @@ FINISHED = "FINISHED"
 class Task:
     cmd: List[str]
     min_gpus: int = 0
-    min_gpu_memory: Optional[int] = None
+    min_gpu_memory: int = 0
     priority: int = 0
     available_gpu_ids: Optional[List[int]] = None
     stderr_log_path: Optional[str] = None
@@ -52,8 +52,8 @@ class Task:
         self.state = RUNNING
         if self.min_gpus != 0:
             CUDA_DEVICES = f"export CUDA_VISIBLE_DEVICES={','.join(map(str, gpus))}"
-            cmd = [CUDA_DEVICES] + self.cmd
-        cmd = " && ".join(cmd)
+            self.cmd = [CUDA_DEVICES] + self.cmd
+        cmd = " && ".join(self.cmd)
         full_cmd = f"nohup bash -c '{cmd}' 1>\"{self.stdout_log_path}\" 2>\"{self.stderr_log_path}\" &  echo $!"
         self.pid = int(subprocess.getoutput(full_cmd))
         self.occupied_gpu_ids = gpus
