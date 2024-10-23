@@ -50,10 +50,11 @@ class Task:
             self = _
             raise e
         self.state = RUNNING
+        cmd=self.cmd
         if self.min_gpus != 0:
             CUDA_DEVICES = f"export CUDA_VISIBLE_DEVICES={','.join(map(str, gpus))}"
-            self.cmd = [CUDA_DEVICES] + self.cmd
-        cmd = " && ".join(self.cmd)
+            cmd = [CUDA_DEVICES] + cmd
+        cmd = " && ".join(cmd)
         full_cmd = f"nohup bash -c '{cmd}' 1>\"{self.stdout_log_path}\" 2>\"{self.stderr_log_path}\" &  echo $!"
         self.pid = int(subprocess.getoutput(full_cmd))
         self.occupied_gpu_ids = gpus
