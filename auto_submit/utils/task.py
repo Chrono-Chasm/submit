@@ -32,7 +32,7 @@ class Task:
         assert self.state == NOT_SUBMITTED
         self.state = SUBMITTING
 
-    def running(self, gpus, stdout_log_path, stderr_log_path):
+    def running(self, gpus, port, stdout_log_path, stderr_log_path):
         assert self.state == SUBMITTING
         _ = self
         try:
@@ -50,12 +50,14 @@ class Task:
             self = _
             raise e
         self.state = RUNNING
-        cmd=self.cmd
+        cmd = self.cmd
         if self.min_gpus != 0:
             CUDA_DEVICES = f"export CUDA_VISIBLE_DEVICES={','.join(map(str, gpus))}"
             cmd = [CUDA_DEVICES] + cmd
+        if port is not None:
+            cmd = [f"export PORT={port}"] + cmd
         cmd = " && ".join(cmd)
-        full_cmd = f"nohup bash -c '{cmd}' 1>\"{self.stdout_log_path}\" 2>\"{self.stderr_log_path}\" &  echo $!"
+        full_cmd = f'nohup bash -c \'{cmd}\' 1>"{self.stdout_log_path}" 2>"{self.stderr_log_path}" &  echo $!'
         self.pid = int(subprocess.getoutput(full_cmd))
         self.occupied_gpu_ids = gpus
         self.full_cmd = full_cmd

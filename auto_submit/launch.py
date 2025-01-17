@@ -1,5 +1,6 @@
 import os
 import time
+import socket
 from auto_submit.utils.task import *
 from auto_submit.utils.redisdb import redis_db
 from auto_submit.utils.gpu import get_available_gpus
@@ -8,6 +9,22 @@ from auto_submit.utils.lock import Lock
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
 WAIT_TIME = config["WAIT_TIME"]
+
+
+def is_port_free(port):
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+        try:
+            s.bind(("", port))
+            return True
+        except OSError:
+            return False
+
+
+def find_free_port(start_port=1024, end_port=65535):
+    for port in range(start_port, end_port + 1):
+        if is_port_free(port):
+            return port
+    return None
 
 
 def try_submit(task: Task, cuda_visible_devices):
@@ -20,7 +37,7 @@ def try_submit(task: Task, cuda_visible_devices):
         gpus = get_available_gpus(task, cuda_visible_devices)
     datetime = time.strftime("%Y-%m-%d %H:%M:%S", time.localtime())
     task.running(
-        gpus,
+        gpus,find_free_port(),
         os.path.join(SCRIPT_DIR, os.pardir, "log", f"{datetime} {task.task_id}.stdout"),
         os.path.join(SCRIPT_DIR, os.pardir, "log", f"{datetime} {task.task_id}.stderr"),
     )
